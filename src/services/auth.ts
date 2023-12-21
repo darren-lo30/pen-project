@@ -1,4 +1,4 @@
-import prisma from "../prisma";
+import prisma from '../prisma';
 import bcrypt from 'bcrypt';
 
 const saltRounds = 10;
@@ -18,7 +18,7 @@ export const authenticateUser = async (email: string, password: string) => {
   if(!await bcrypt.compare(password, user.password)) return null;
 
   return user;
-}
+};
 
 // Initialize a user when they register
 export const initializeUser = async (params: {
@@ -42,5 +42,5 @@ export const initializeUser = async (params: {
         }
       }
     }
-  })
-}
+  });
+};

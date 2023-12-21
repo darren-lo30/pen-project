@@ -1,5 +1,5 @@
-import passport, { authenticate } from 'passport'
-import {Strategy as LocalStrategy, VerifyFunction} from 'passport-local'
+import passport from 'passport';
+import {Strategy as LocalStrategy} from 'passport-local';
 import { authenticateUser } from '../services/auth';
 import { User } from '@prisma/client';
 import prisma from '../prisma';
@@ -8,6 +8,7 @@ import prisma from '../prisma';
 type _User = User;
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface User extends _User {}
   }

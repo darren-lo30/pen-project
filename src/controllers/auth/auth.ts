@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import prisma from '../../prisma';
-import { z } from "zod";
+import { z } from 'zod';
 import validate from '../../middleware/validation';
 import { initializeUser } from '../../services/auth';
 
@@ -8,10 +8,10 @@ const signUp: RequestHandler[] = [
   validate(z.object({
     body: z.object({
       email: z.string({
-        required_error: "Email is required"
+        required_error: 'Email is required'
       }),
       password: z.string({
-        required_error: "Password is required."
+        required_error: 'Password is required.'
       })
     })
   })),
@@ -30,13 +30,13 @@ const signUp: RequestHandler[] = [
 
     initializeUser({
       email: req.body.email,
-      firstName: "test",
-      lastName: "test",
+      firstName: 'test',
+      lastName: 'test',
       rawPassword: req.body.password,
     });
 
     res.sendStatus(200);
   }
-]
+];
 
-export { signUp }
+export { signUp };
