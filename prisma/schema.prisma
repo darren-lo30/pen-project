@@ -22,6 +22,6 @@ model User {
 
 model Preferences {
   id        String  @id @default(uuid())
-  user      User?
+  user      User?   
   storeData Boolean
 }

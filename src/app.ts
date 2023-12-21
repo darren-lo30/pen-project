@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
 import router from './routes';
+import passport from 'passport';
 
 dotenv.config()
 
@@ -19,6 +20,11 @@ app.use(session({
 app.use(cors()); 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
+
+// Initialize passport
+app.use(passport.initialize());
+app.use(passport.session())
+
 
 app.use(router);
 
