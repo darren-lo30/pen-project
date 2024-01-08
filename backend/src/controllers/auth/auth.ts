@@ -4,7 +4,7 @@ import { z } from 'zod';
 import validate from '../../middleware/validation';
 import { initializeUser } from '../../services/auth';
 
-const signUp: RequestHandler[] = [
+export const signUp: RequestHandler[] = [
   validate(z.object({
     body: z.object({
       email: z.string({
@@ -39,4 +39,15 @@ const signUp: RequestHandler[] = [
   }
 ];
 
-export { signUp };
+export const authenticate: RequestHandler = (req, res) => {
+  res.send({
+    user: req.user,
+  });
+};
+
+export const signOut: RequestHandler = (req, res, next) => {
+  req.logOut(function(err) {
+    if (err) { return next(err); }
+  });
+  res.sendStatus(200);
+};

@@ -5,14 +5,24 @@ import { User } from '@prisma/client';
 import prisma from '../prisma';
 
 // Update Express User type
-type _User = User;
-
+type _User = Omit<User, 'password'>;
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface User extends _User {}
   }
 }
+
+// Exclude helper
+function exclude<T extends { [key: string]: unknown }, Key extends keyof T>(
+  user: T,
+  keys: Key[]
+): Omit<T, Key> {
+  return Object.fromEntries(
+    Object.entries(user).filter(([key]) => !keys.includes(key as Key))
+  ) as Omit<T, Key>;
+}
+
 
 passport.use(new LocalStrategy({
   usernameField: 'email',
@@ -33,9 +43,14 @@ passport.deserializeUser(async (userId: string, done) => {
   const user = await prisma.user.findFirst({
     where: {
       id: userId
-    }
+    },
   });
-  done(null, user);
+  if(user) {
+    const userWithoutPassword = exclude(user, ['password']); 
+    done(null, userWithoutPassword);
+  } else {
+    done(null, user);
+  }
 });
 
 export default passport;
