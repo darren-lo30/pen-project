@@ -1,4 +1,5 @@
 import React, { RefObject, useEffect, useRef } from "react";
+import { socket } from "../../socket";
 
 const Canvas = (props: {
   className?: 'string',
@@ -8,29 +9,53 @@ const Canvas = (props: {
     lineCap: CanvasLineCap,
     strokeStyle: string,
   },
+  imageData?: ImageData,
 }) => {
   const canvasRef : RefObject<HTMLCanvasElement> = useRef(null);
 
-  useEffect(() => {
-    const mousePosition = { x: 0, y: 0 };
-
+  const getCanvasContext = () => {
     const canvas = canvasRef.current;
     if(!canvas) throw Error("Error initializing canvas");
     const context = canvas.getContext('2d');
     if(!context) throw Error("Error initializing canvas context");
 
+    return {canvas, context};
+  }
+
+  useEffect(() => {
+    if(props.imageData) {
+      const { context } = getCanvasContext();
+      context.putImageData(props.imageData, 0, 0);
+    }
+  }, [props.imageData]);
+
+  useEffect(() => {
+    let mousePosition = { x: 0, y: 0 };
+
+    const {canvas, context} = getCanvasContext();
+    
     context.canvas.width  = window.innerWidth;
     context.canvas.height = window.innerHeight
     const canvasPosition = canvas.getBoundingClientRect();
 
-    // Set up listeners
+
+    const getNewMousePosition = (e: MouseEvent) => {
+      return {
+        x: e.clientX - canvasPosition.x,
+        y: e.clientY - canvasPosition.y
+      };
+    }
+
     const setPosition = (e: MouseEvent) => {
-      mousePosition.x = e.clientX - canvasPosition.x;
-      mousePosition.y = e.clientY - canvasPosition.y;
+      mousePosition = getNewMousePosition(e);
     }
 
     const draw = (e: MouseEvent) => {
       if (e.buttons !== 1) return;
+      socket.emit('draw', {
+        prevPosition: mousePosition,
+        currPosition: getNewMousePosition(e),
+      });
     
       context.beginPath();
     
@@ -43,11 +68,28 @@ const Canvas = (props: {
       context.lineTo(mousePosition.x, mousePosition.y); 
     
       context.stroke(); 
+
     }
 
     document.addEventListener('mousemove', draw);
     document.addEventListener('mousedown', setPosition);
     document.addEventListener('mouseenter', setPosition);
+  }, [props.renderingOptions.lineCap, props.renderingOptions.lineWidth]);
+
+  useEffect(() => {
+    const {context} = getCanvasContext();
+
+    socket.on('canvas-update', (payload) => {
+      context.beginPath();
+      context.lineWidth = props.renderingOptions.lineWidth;
+      context.lineCap = props.renderingOptions.lineCap;
+      context.strokeStyle = 'black';
+    
+      context.moveTo(payload.prevPosition.x, payload.prevPosition.y); 
+      context.lineTo(payload.currPosition.x, payload.currPosition.y); 
+    
+      context.stroke(); 
+    });
   }, [props.renderingOptions.lineCap, props.renderingOptions.lineWidth]);
 
   return (

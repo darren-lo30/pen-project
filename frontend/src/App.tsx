@@ -6,6 +6,8 @@ import { useAppDispatch } from './redux/hooks';
 import { useEffect } from 'react';
 import { authenticate } from './api/auth';
 import { setUser } from './redux/reducers/userReducer';
+import JoinRoomPage from './pages/JoinRoomPage';
+import './socket';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -24,7 +26,8 @@ function App() {
       <Routes>
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<SignUp />} />
-        <Route path='/' element={<CanvasPage />} />
+        <Route path='/' element={<JoinRoomPage />} />
+        <Route path='/room/:roomId' element={<CanvasPage />} />
       </Routes>
     </Router>
   )
