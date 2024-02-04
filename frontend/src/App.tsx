@@ -8,6 +8,7 @@ import { authenticate } from './api/auth';
 import { setUser } from './redux/reducers/userReducer';
 import JoinRoomPage from './pages/JoinRoomPage';
 import './socket';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -28,6 +29,7 @@ function App() {
         <Route path='/sign-up' element={<SignUp />} />
         <Route path='/' element={<JoinRoomPage />} />
         <Route path='/room/:roomId' element={<CanvasPage />} />
+        <Route path='/me' element={<ProfilePage />} />
       </Routes>
     </Router>
   )

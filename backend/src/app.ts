@@ -1,20 +1,16 @@
 import * as dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import session from 'express-session';
 import router from './routes';
 import passport from 'passport';
+import { sessionMiddleware } from './config/sessionConfig';
 
 dotenv.config();
 
 const app = express(); 
 
 // Initialize sessions
-app.use(session({
-  secret: 'secret',
-  resave: false,
-  saveUninitialized: false
-}));
+app.use(sessionMiddleware);
 
 // CORS
 app.use(cors({
@@ -31,4 +27,5 @@ app.use(passport.session());
 
 app.use(router);
 
+export { sessionMiddleware };
 export default app;

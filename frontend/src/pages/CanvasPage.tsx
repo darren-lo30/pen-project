@@ -14,8 +14,6 @@ const CanvasPage = () => {
     });
 
     socket.on('on-join-room', (imageData) => {
-      console.log(imageData.data);
-      console.log(new Uint8Array(imageData).filter(x => x != 0).length);
       const imgData: ImageData = new ImageData(
         new Uint8ClampedArray(imageData.data),
         1000,

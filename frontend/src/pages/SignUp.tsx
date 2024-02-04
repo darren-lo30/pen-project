@@ -7,6 +7,7 @@ import { setUser } from "../redux/reducers/userReducer";
 import { isAxiosError } from "axios";
 import { useNavigate, } from "react-router-dom";
 import { useSignedIn } from "../hooks/userHooks";
+import { useEffect } from "react";
 
 type SignUpValues = {
   firstName: string;
@@ -50,9 +51,11 @@ const SignUp = () => {
     return null;
   }
 
-  if (isSignedIn) { 
-    navigate('/');
-  }
+  useEffect(() => {
+    if (isSignedIn) { 
+      navigate('/');
+    }
+  }, [isSignedIn, navigate]);
 
   
   return (

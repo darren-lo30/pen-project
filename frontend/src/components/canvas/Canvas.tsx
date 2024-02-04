@@ -46,6 +46,12 @@ const Canvas = (props: {
       };
     }
 
+    let isStrokeStart = false;
+    const onMouseDown = (e: MouseEvent) => {
+      setPosition(e);
+      isStrokeStart = true;
+    }
+
     const setPosition = (e: MouseEvent) => {
       mousePosition = getNewMousePosition(e);
     }
@@ -55,7 +61,12 @@ const Canvas = (props: {
       socket.emit('draw', {
         prevPosition: mousePosition,
         currPosition: getNewMousePosition(e),
+        isStrokeStart,
       });
+
+      if(isStrokeStart) {
+        isStrokeStart = false;
+      }
     
       context.beginPath();
     
@@ -71,9 +82,17 @@ const Canvas = (props: {
 
     }
 
+    // Add event listeners
     document.addEventListener('mousemove', draw);
-    document.addEventListener('mousedown', setPosition);
+    document.addEventListener('mousedown', onMouseDown);
     document.addEventListener('mouseenter', setPosition);
+
+    return () => {
+      // Remove event listeners
+      document.removeEventListener('mousemove', draw);
+      document.removeEventListener('mousedown', onMouseDown);
+      document.removeEventListener('mouseenter', setPosition);
+    }
   }, [props.renderingOptions.lineCap, props.renderingOptions.lineWidth]);
 
   useEffect(() => {

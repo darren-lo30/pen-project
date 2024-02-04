@@ -1,11 +1,13 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import CenteredModal from "../components/CenteredModal";
-import { Alert, AlertIcon, AlertTitle, Button, Divider, FormControl, FormLabel, HStack, Heading, Input, Spacer, Stack, Text } from '@chakra-ui/react'
+import { Alert, AlertIcon, AlertTitle, Button, Divider, FormControl, FormErrorMessage, FormLabel, HStack, Heading, Input, Spacer, Stack, Text } from '@chakra-ui/react'
 import { signIn } from "../api/auth";
 import { useAppDispatch } from "../redux/hooks";
 import { setUser } from "../redux/reducers/userReducer";
 import { useNavigate, } from "react-router-dom";
 import { useSignedIn } from "../hooks/userHooks";
+import { useEffect } from "react";
+import { isAxiosError } from "axios";
 
 type SignUpValues = {
   firstName: string;
@@ -26,6 +28,12 @@ const SignIn = () => {
       dispatch(setUser(result.data.user));
       navigate('/');
     } catch (e) {
+      if(isAxiosError(e)) {
+        if(e.response?.status == 401) {
+          setError('password', {message: "An account doesn't exist with that email or password."});
+          return;
+        }
+      } 
       setError('root', {message: 'Something went wrong.'});
     }
   };
@@ -41,11 +49,14 @@ const SignIn = () => {
     } 
 
     return null;
-  }
+  } 
 
-  if (isSignedIn) { 
-    navigate('/');
-  }
+  useEffect(() => {
+    if (isSignedIn) { 
+      navigate('/');
+    }
+  }, [isSignedIn, navigate]);
+
 
   
   return (
@@ -53,18 +64,21 @@ const SignIn = () => {
       <CenteredModal>
         {renderFormError()}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Heading as='h4' fontSize='32px'>Sign Up</Heading>
-          <Stack spacing={3}>            
+          <Heading as='h4' fontSize='32px'>Sign In</Heading>
+          <Stack spacing={3} marginTop='24px'>            
             <FormControl>
               <FormLabel>Email</FormLabel>
               <Input type='email' {...register("email")} isRequired />
             </FormControl>
-            <FormControl>
+            <FormControl isInvalid={errors.password !== undefined}>
               <FormLabel>Password</FormLabel>
               <Input type='password' {...register("password")} isRequired />
+              {errors.password && (
+                <FormErrorMessage>{ errors.password.message }</FormErrorMessage>
+              )}
             </FormControl>
             <Spacer height='24px' />
-            <Button type='submit' >Sign Up</Button>
+            <Button type='submit'>Sign In</Button>
             <HStack>
               <Divider />
               <Text>or</Text>

@@ -13,15 +13,15 @@ declare global {
   }
 }
 
-// Exclude helper
-function exclude<T extends { [key: string]: unknown }, Key extends keyof T>(
-  user: T,
-  keys: Key[]
-): Omit<T, Key> {
-  return Object.fromEntries(
-    Object.entries(user).filter(([key]) => !keys.includes(key as Key))
-  ) as Omit<T, Key>;
-}
+// // Exclude helper
+// function exclude<T extends { [key: string]: unknown }, Key extends keyof T>(
+//   user: T,
+//   keys: Key[]
+// ): Omit<T, Key> {
+//   return Object.fromEntries(
+//     Object.entries(user).filter(([key]) => !keys.includes(key as Key))
+//   ) as Omit<T, Key>;
+// }
 
 
 passport.use(new LocalStrategy({
@@ -46,8 +46,8 @@ passport.deserializeUser(async (userId: string, done) => {
     },
   });
   if(user) {
-    const userWithoutPassword = exclude(user, ['password']); 
-    done(null, userWithoutPassword);
+    // const userWithoutPassword = exclude(user, ['password']); 
+    done(null, user);
   } else {
     done(null, user);
   }

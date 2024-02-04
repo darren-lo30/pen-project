@@ -5,12 +5,14 @@ import { roomManager  } from '../lib/dataModels/RoomManager';
 import Point from '../lib/dataModels/Points';
 
 interface DrawPayload {
+  isStrokeStart: boolean,
   prevPosition: Point,
   currPosition: Point 
 }
 
 const drawListener = (_ : Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, unknown>, socket: Socket) => {
   socket.on('draw', (payload: DrawPayload) => {
+    const user = socket.request.user;
     const rooms = new Array(...socket.rooms).filter(room => isRoomId(room));
 
     if(rooms.length != 1) {
@@ -27,6 +29,16 @@ const drawListener = (_ : Server<DefaultEventsMap, DefaultEventsMap, DefaultEven
     const room = roomManager.getOrCreateRoom(roomId);
     const canvas = room.getCanvas();
     canvas.draw(payload.prevPosition, payload.currPosition);
+
+    // Update cache db
+    if(user) {
+      const strokeCache = room.getStrokeCache();
+      if(payload.isStrokeStart) {
+        strokeCache.startStroke(user);
+        console.log('STARTING STROKE DETECTED');
+      }
+      strokeCache.addPoint(user, payload.currPosition);
+    }
   });
 };
 

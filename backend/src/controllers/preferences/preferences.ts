@@ -12,6 +12,7 @@ const updatePreferences: RequestHandler[] = [
     })
   })),
   async (req, res) => {
+    console.log('UPDATING PREFERENCES');
     await prisma.preferences.update({
       where: {
         id: req.user!.preferencesId
@@ -24,4 +25,19 @@ const updatePreferences: RequestHandler[] = [
   }
 ];
 
-export { updatePreferences };
+const getPreferences: RequestHandler = async(req, res) => {
+  console.log('GETTING PREFERENCES');
+  const preferences = await prisma.preferences.findFirst({
+    where: {
+      user: {
+        id: req.user?.id,
+      }
+    }
+  });
+
+  res.send({
+    preferences
+  });
+};
+
+export { updatePreferences, getPreferences };
