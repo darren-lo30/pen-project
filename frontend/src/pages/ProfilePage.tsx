@@ -3,6 +3,7 @@ import CenteredModal from "../components/CenteredModal";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { getPreferences, updatePreferences } from "../api/preferences";
+import { getStrokeData } from "../api/strokeData";
 
 interface ProfileFormValues {
   saveStrokeData: boolean;
@@ -11,6 +12,18 @@ interface ProfileFormValues {
 const ProfilePage = () => {
   const { register, watch, setValue } = useForm<ProfileFormValues>();
   const saveStrokeData = watch('saveStrokeData', false);
+  
+  const downloadStrokeData = async () => {
+    const res = await getStrokeData();
+    const url = window.URL.createObjectURL(res.data);
+    // Hack to download file. TODO: Find better way to do this
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'data.txt';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
 
   useEffect(() =>{ 
     updatePreferences({
@@ -36,7 +49,7 @@ const ProfilePage = () => {
           </HStack>
         </FormControl>  
         <Divider marginY={'24px'}/> 
-        <Button>Download My Data</Button>
+        <Button onClick={downloadStrokeData}>Download My Data</Button>
       </Stack>
     </CenteredModal>
   )

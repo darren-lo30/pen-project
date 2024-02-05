@@ -35,7 +35,6 @@ const drawListener = (_ : Server<DefaultEventsMap, DefaultEventsMap, DefaultEven
       const strokeCache = room.getStrokeCache();
       if(payload.isStrokeStart) {
         strokeCache.startStroke(user);
-        console.log('STARTING STROKE DETECTED');
       }
       strokeCache.addPoint(user, payload.currPosition);
     }

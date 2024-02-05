@@ -16,8 +16,8 @@ const CanvasPage = () => {
     socket.on('on-join-room', (imageData) => {
       const imgData: ImageData = new ImageData(
         new Uint8ClampedArray(imageData.data),
-        1000,
-        1000,
+        3000,
+        3000,
       )
       setImageData(imgData);
     });

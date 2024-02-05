@@ -4,14 +4,14 @@ class Canvas {
   private canvasImpl: CanvasImpl;
 
   constructor() {
-    this.canvasImpl = new CanvasImpl(1000, 1000);
+    this.canvasImpl = new CanvasImpl(3000, 3000);
   }
 
   draw(start: Point, end: Point) {
     const context = this.getContext();
     context.beginPath();
 
-    context.lineWidth = 10;
+    context.lineWidth = 2;
     context.lineCap = 'round';
     context.strokeStyle = 'black';
 
@@ -23,7 +23,7 @@ class Canvas {
   }
 
   getData() {
-    const x = this.getContext().getImageData(0, 0, 1000, 1000);
+    const x = this.getContext().getImageData(0, 0, 3000, 3000);
     return x;
   }
 
