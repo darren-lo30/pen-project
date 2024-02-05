@@ -3,6 +3,7 @@ import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { isRoomId } from './roomHelpers';
 import { roomManager  } from '../lib/dataModels/RoomManager';
 import Point from '../lib/dataModels/Points';
+import prisma from '../prisma';
 
 interface DrawPayload {
   isStrokeStart: boolean,
@@ -11,7 +12,7 @@ interface DrawPayload {
 }
 
 const drawListener = (_ : Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, unknown>, socket: Socket) => {
-  socket.on('draw', (payload: DrawPayload) => {
+  socket.on('draw', async (payload: DrawPayload) => {
     const user = socket.request.user;
     const rooms = new Array(...socket.rooms).filter(room => isRoomId(room));
 
@@ -32,11 +33,20 @@ const drawListener = (_ : Server<DefaultEventsMap, DefaultEventsMap, DefaultEven
 
     // Update cache db
     if(user) {
-      const strokeCache = room.getStrokeCache();
-      if(payload.isStrokeStart) {
-        strokeCache.startStroke(user);
+      const userPreferences = await prisma.preferences.findFirst({
+        where: {
+          user,
+        }
+      });
+
+      // Only store data if permission given
+      if(userPreferences?.storeData) {
+        const strokeCache = room.getStrokeCache();
+        if(payload.isStrokeStart) {
+          strokeCache.startStroke(user);
+        }
+        strokeCache.addPoint(user, payload.currPosition);
       }
-      strokeCache.addPoint(user, payload.currPosition);
     }
   });
 };

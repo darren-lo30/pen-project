@@ -25,7 +25,6 @@ class UserStrokeCache {
         // Always leave 
         const savedStrokeData = strokeData.length <= 1 ? [] : strokeData.slice(0, -1);
         const remainingStrokeData = strokeData.length <= 1 ? strokeData : strokeData.slice(-1);
-        console.log(`Saving ${savedStrokeData.length} strokes for canvas ${canvasId} for user ${userId}`);
         const save = await prisma.strokeData.createMany({
           data: savedStrokeData.map(data => ({
             canvasId: canvasId,

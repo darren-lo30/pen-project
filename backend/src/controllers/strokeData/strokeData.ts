@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express';
 import prisma from '../../prisma';
-import stream from 'stream';
 
 // TODO: Generates a zip file with the user's stroke data
 // The zip file will have files corresponding to room ids with the user's stroke data in InkML format
