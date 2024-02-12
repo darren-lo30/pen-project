@@ -1,20 +1,6 @@
-## Getting Started
-To get started, run the following:
-```console
-npm install
-```
-
-Then create a ```.env``` file in this folder with the variables outlines in ```example.env```
-
-### Development
-To run the dev environment:
-```
-npm run dev
-```
-This environment will automatically rebuild when a file changes.
-
-### Production
-To build the production environment:
-```
-npm run build
-```
+## Folder structure
+- `/api`: contains calls to the api
+- `/components`: reusable React components
+- `/hooks`: React hooks
+- `/pages`: Pages which correspond to a unique URL
+- `/redux`: Redux reducers for global state
