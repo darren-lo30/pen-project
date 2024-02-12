@@ -19,18 +19,18 @@ const ProfilePage = () => {
     // Hack to download file. TODO: Find better way to do this
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'data.txt';
+    a.download = 'data.zip';
     document.body.appendChild(a);
     a.click();
     a.remove();
   }
 
-  useEffect(() =>{ 
+  const updateSaveStrokeData = (e: React.ChangeEvent<HTMLInputElement>) => {
     updatePreferences({
-      storeData: saveStrokeData 
+      storeData: e.target.checked, 
     });
-  }, [saveStrokeData]);
-  
+  };
+
   useEffect(() => {
     (async() => {
       const res = await getPreferences();
@@ -45,7 +45,7 @@ const ProfilePage = () => {
         <FormControl>
           <HStack alignItems={'center'}>
             <FormLabel mb={0}>Save Data</FormLabel>
-              <Switch size='md' ml='auto' {...register('saveStrokeData')} isChecked={saveStrokeData} />
+              <Switch size='md' ml='auto' {...register('saveStrokeData', { onChange: updateSaveStrokeData })} isChecked={saveStrokeData} />
           </HStack>
         </FormControl>  
         <Divider marginY={'24px'}/> 
