@@ -1,13 +1,14 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import CenteredModal from "../components/CenteredModal";
-import { Alert, AlertIcon, AlertTitle, Button, Divider, FormControl, FormErrorMessage, FormLabel, HStack, Heading, Input, Spacer, Stack, Text } from '@chakra-ui/react'
+import { Alert, AlertIcon, AlertTitle, Box, Button, Divider, FormControl, FormErrorMessage, FormLabel, HStack, Heading, Input, Link, Spacer, Stack, Text } from '@chakra-ui/react'
 import { signUp } from "../api/auth";
 import { useAppDispatch } from "../redux/hooks";
 import { setUser } from "../redux/reducers/userReducer";
 import { isAxiosError } from "axios";
-import { useNavigate, } from "react-router-dom";
+import { Link as RouterLink, useNavigate, } from "react-router-dom";
 import { useSignedIn } from "../hooks/userHooks";
 import { useEffect } from "react";
+import { PATHS } from "../routes";
 
 type SignUpValues = {
   firstName: string;
@@ -26,7 +27,7 @@ const SignUp = () => {
     try {
       const result = await signUp(data);
       dispatch(setUser(result.data.user));
-      navigate('/');
+      navigate(PATHS.HOME);
     } catch (e) {
       if(isAxiosError(e)) {
         if(e.response?.status == 422) {
@@ -53,7 +54,7 @@ const SignUp = () => {
 
   useEffect(() => {
     if (isSignedIn) { 
-      navigate('/');
+      navigate(PATHS.HOME);
     }
   }, [isSignedIn, navigate]);
 
@@ -93,6 +94,13 @@ const SignUp = () => {
               <Text>or</Text>
               <Divider />
             </HStack>
+            <Box margin='auto'>
+              Already have an account? 
+              {' '}
+              <Link color='blue.500'>
+                <RouterLink to={PATHS.SIGN_IN}>Sign In</RouterLink>
+              </Link>
+            </Box>
           </Stack>
         </form>
       </CenteredModal>
