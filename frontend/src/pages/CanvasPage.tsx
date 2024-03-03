@@ -28,6 +28,7 @@ const CanvasPage = () => {
       <Navbar />
       <div>
         <Canvas 
+          roomId={roomId}
           canvasProps={{
             width: '100%', height:'100%', 
           }} 

@@ -2,7 +2,8 @@ import React, { RefObject, useEffect, useRef } from "react";
 import { socket } from "../../socket";
 
 const Canvas = (props: {
-  className?: 'string',
+  className?: string,
+  roomId: string,
   canvasProps: React.CanvasHTMLAttributes<HTMLCanvasElement>,
   renderingOptions: {
     lineWidth: number,
@@ -13,7 +14,7 @@ const Canvas = (props: {
 }) => {
   const canvasRef : RefObject<HTMLCanvasElement> = useRef(null);
 
-  const getCanvasContext = () => {
+  const getCanvasContext = () => {  
     const canvas = canvasRef.current;
     if(!canvas) throw Error("Error initializing canvas");
     const context = canvas.getContext('2d');
@@ -59,6 +60,7 @@ const Canvas = (props: {
     const draw = (e: MouseEvent) => {
       if (e.buttons !== 1) return;
       socket.emit('draw', {
+        roomId: props.roomId,
         prevPosition: mousePosition,
         currPosition: getNewMousePosition(e),
         isStrokeStart,
@@ -79,7 +81,6 @@ const Canvas = (props: {
       context.lineTo(mousePosition.x, mousePosition.y); 
     
       context.stroke(); 
-
     }
 
     // Add event listeners

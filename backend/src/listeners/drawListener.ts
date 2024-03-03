@@ -1,11 +1,11 @@
 import { Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
-import { isRoomId } from './roomHelpers';
 import { roomManager  } from '../lib/dataModels/RoomManager';
 import Point from '../lib/dataModels/Points';
 import prisma from '../prisma';
 
 interface DrawPayload {
+  roomId: string,
   isStrokeStart: boolean,
   prevPosition: Point,
   currPosition: Point 
@@ -14,16 +14,9 @@ interface DrawPayload {
 const drawListener = (_ : Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, unknown>, socket: Socket) => {
   socket.on('draw', async (payload: DrawPayload) => {
     const user = socket.request.user;
-    const rooms = new Array(...socket.rooms).filter(room => isRoomId(room));
-
-    if(rooms.length != 1) {
-      console.log('ERROR: A user should only be in a single room');
-      return;
-    }
 
     // Destructuring assignment, get first element of set
-    const [roomId] = rooms;
-
+    const {roomId} = payload;
     socket.to(roomId).emit('canvas-update', payload);    
 
     // Keep a local copy
