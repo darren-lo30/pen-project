@@ -16,7 +16,6 @@ const JoinRoomPage = () => {
   }
 
   return (
-    
     <Flex width={"100vw"} height={"100vh"} flexDir={'column'}>
       <MainNavbar />
       <Center flex='1'>
@@ -29,7 +28,6 @@ const JoinRoomPage = () => {
         </Box>
       </Center>
     </Flex>
-
   )
 }
 

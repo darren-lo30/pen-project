@@ -17,8 +17,6 @@ const generateInkMLZip = (zipArchiver: Archiver, strokeData: StrokeData[]) => {
     }
   });
 
-  console.log(sortedStrokeData.keys());
-
   // Generate zip file from buffers
   sortedStrokeData.forEach((strokeData, canvasId) => {
     const root = createInkMLDoc(strokeData);

@@ -97,9 +97,7 @@ const SignUp = () => {
             <Box margin='auto'>
               Already have an account? 
               {' '}
-              <Link color='blue.500'>
-                <RouterLink to={PATHS.SIGN_IN}>Sign In</RouterLink>
-              </Link>
+              <Link color='blue.500' as={RouterLink} to={PATHS.SIGN_IN}>Sign In</Link>
             </Box>
           </Stack>
         </form>

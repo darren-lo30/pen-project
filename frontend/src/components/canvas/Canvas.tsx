@@ -94,7 +94,7 @@ const Canvas = (props: {
       document.removeEventListener('mousedown', onMouseDown);
       document.removeEventListener('mouseenter', setPosition);
     }
-  }, [props.renderingOptions.lineCap, props.renderingOptions.lineWidth]);
+  }, [props.renderingOptions.lineCap, props.renderingOptions.lineWidth, props.roomId]);
 
   useEffect(() => {
     const {context} = getCanvasContext();

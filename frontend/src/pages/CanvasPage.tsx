@@ -1,12 +1,12 @@
-import Navbar from "../Navbar";
 import Canvas from "../components/canvas/Canvas";
 import { useEffect, useState } from "react";
 import { socket } from "../socket";
 import { useParams } from "react-router-dom";
 import { Flex } from "@chakra-ui/react";
+import CanvasToolbar from "../components/canvas/CanvasToolbar";
 
 const CanvasPage = () => {  
-  const { roomId } = useParams();
+  const { roomId } = useParams<{roomId: string}>();
   const [imageData, setImageData] = useState<ImageData>();
   useEffect(() => {
     socket.emit('join-room', {
@@ -25,10 +25,10 @@ const CanvasPage = () => {
   
   return (
     <Flex width={"100vw"} height={"100vh"} alignContent={"center"} justifyContent={"center"} flexDirection={'column'}>
-      <Navbar />
+      <CanvasToolbar />
       <div>
         <Canvas 
-          roomId={roomId}
+          roomId={roomId!}
           canvasProps={{
             width: '100%', height:'100%', 
           }} 

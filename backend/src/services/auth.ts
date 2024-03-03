@@ -10,12 +10,14 @@ export const authenticateUser = async (email: string, password: string) => {
       email,
     }
   });
-
   // User with email not found
   if(!user) return null;
 
+  const userPasswordRes = await prisma.$queryRaw<{password: string }[]>`SELECT password FROM "User" WHERE email = ${email} LIMIT 1`;
+  const userPassword = userPasswordRes[0].password;
+  
   // Check that password is correct
-  if(!await bcrypt.compare(password, user.password)) return null;
+  if(!await bcrypt.compare(password, userPassword)) return null;
 
   return user;
 };
